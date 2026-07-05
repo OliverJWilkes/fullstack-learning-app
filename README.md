@@ -62,9 +62,13 @@ npm run dev               # starts Vite on http://localhost:5173
 
 ## Status
 
-**Milestone 1 (scaffolding + accounts) — done:** signup/login/JWT auth,
-Prisma schema, Vite + Fastify project scaffolds. There is no gameplay yet —
-this only gets you as far as creating an account and logging in.
+- **Milestone 1 (scaffolding + accounts) — done:** signup/login/JWT auth,
+  Prisma schema, Vite + Fastify project scaffolds.
+- **Milestone 2 (room lifecycle + role assignment) — done:** create a room
+  (AI or human host), join by a 6-character code, host starts the game and
+  roles are assigned per the spec's distribution table. Each player only
+  ever sees their own role.
 
-Remaining milestones (room lifecycle & role assignment, core game engine,
-real-time wiring, AI host, polish) are tracked in `docs/implementation-plan.md`.
+There is still no actual night/day gameplay — once a game starts, roles
+are assigned but there's no way to play a night or day phase yet. That's
+Milestone 3 onward, tracked in `docs/implementation-plan.md`.
