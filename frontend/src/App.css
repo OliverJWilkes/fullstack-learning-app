@@ -1,6 +1,7 @@
 .auth-page,
-.dashboard-page {
-  max-width: 360px;
+.dashboard-page,
+.room-page {
+  max-width: 480px;
   margin: 4rem auto;
   display: flex;
   flex-direction: column;
@@ -18,6 +19,23 @@
   flex-direction: column;
   gap: 0.25rem;
   text-align: left;
+}
+
+.dashboard-page section {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.room-page ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .auth-error {

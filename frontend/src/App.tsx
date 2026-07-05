@@ -3,6 +3,7 @@ import { LoginPage } from './auth/LoginPage'
 import { SignupPage } from './auth/SignupPage'
 import { ProtectedRoute } from './auth/ProtectedRoute'
 import { DashboardPage } from './rooms/DashboardPage'
+import { RoomLobbyPage } from './rooms/RoomLobbyPage'
 import './App.css'
 
 function App() {
@@ -15,6 +16,14 @@ function App() {
         element={
           <ProtectedRoute>
             <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/rooms/:code"
+        element={
+          <ProtectedRoute>
+            <RoomLobbyPage />
           </ProtectedRoute>
         }
       />
