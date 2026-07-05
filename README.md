@@ -2,7 +2,7 @@
 
 A browser-based social deduction game (Werewolf/Mafia) for 8–18 players. See
 `ultimatewerewolfspec_3.md` for the full game design spec, and
-`/root/.claude/plans/dapper-growing-pumpkin.md` for the implementation plan.
+`docs/implementation-plan.md` for the implementation plan.
 
 ## Tech stack
 
@@ -12,18 +12,32 @@ A browser-based social deduction game (Werewolf/Mafia) for 8–18 players. See
 - Database: PostgreSQL via Prisma
 - Auth: bcrypt + JWT
 
-## Local development
+## Running it (Docker — recommended, no Node/npm needed on your machine)
+
+Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) (on
+Windows, this sets up its own WSL2 integration automatically — no manual
+`apt`/`sudo` steps needed), then from the repo root:
+
+```
+docker compose up --build
+```
+
+This builds and runs Postgres, the backend, and the frontend together.
+Once it's up, open **http://localhost:5173** in your browser.
+
+To stop everything: `Ctrl+C`, then `docker compose down` (add `-v` to also
+wipe the database).
+
+## Running it without Docker (local Node + Postgres)
 
 ### 1. Database
 
-Start Postgres with Docker:
-
 ```
-docker compose up -d
+docker compose up -d postgres
 ```
 
-(If Docker isn't available, any local Postgres 16 instance works — just
-match the credentials in `backend/.env.example`.)
+(Or point at any local Postgres 16 instance — match the credentials in
+`backend/.env.example`.)
 
 ### 2. Backend
 
@@ -49,7 +63,8 @@ npm run dev               # starts Vite on http://localhost:5173
 ## Status
 
 **Milestone 1 (scaffolding + accounts) — done:** signup/login/JWT auth,
-Prisma schema, Vite + Fastify project scaffolds.
+Prisma schema, Vite + Fastify project scaffolds. There is no gameplay yet —
+this only gets you as far as creating an account and logging in.
 
 Remaining milestones (room lifecycle & role assignment, core game engine,
-real-time wiring, AI host, polish) are tracked in the implementation plan.
+real-time wiring, AI host, polish) are tracked in `docs/implementation-plan.md`.
