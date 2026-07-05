@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum HostType {
+  HUMAN
+  AI
+}
+
+enum GameStatus {
+  LOBBY
+  IN_PROGRESS
+  FINISHED
+}
+
+enum Role {
+  VILLAGER
+  WEREWOLF
+  SEER
+  DOCTOR
+  DETECTIVE
+  POISONER
+  HUNTER
+  TANNER
+  MASON
+  MAYOR
+}
+
+enum Team {
+  VILLAGE
+  WEREWOLF
+  NEUTRAL
+}
+
+enum NightActionType {
+  SHIELD
+  CHECK
+  GUESS
+  KILL_VOTE
+}
+
+enum ChatChannel {
+  ALIVE
+  DEAD
+  WEREWOLF
+  HOST_PRIVATE
+  MASON
+  DOCTOR_PAIR
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  displayName  String
+  createdAt    DateTime @default(now())
+
+  hostedGames Game[]       @relation("HostedGames")
+  players     GamePlayer[]
+}
+
+model Game {
+  id           String     @id @default(uuid())
+  code         String     @unique
+  hostUserId   String?
+  hostUser     User?      @relation("HostedGames", fields: [hostUserId], references: [id])
+  hostType     HostType
+  status       GameStatus @default(LOBBY)
+  playerCount  Int
+  winningTeam  Team?
+  createdAt    DateTime   @default(now())
+  finishedAt   DateTime?
+
+  players       GamePlayer[]
+  nightActions  NightAction[]
+  poisonPending PoisonPending[]
+  votes         Vote[]
+  mayorStates   MayorState[]
+  chatMessages  ChatMessage[]
+  events        GameEvent[]
+}
+
+model GamePlayer {
+  id         String  @id @default(uuid())
+  gameId     String
+  game       Game    @relation(fields: [gameId], references: [id])
+  userId     String
+  user       User    @relation(fields: [userId], references: [id])
+  role       Role
+  team       Team
+  seatOrder  Int
+  isAlive    Boolean @default(true)
+  diedNight  Int?
+  diedDay    Int?
+
+  @@unique([gameId, userId])
+  @@unique([gameId, seatOrder])
+}
+
+model NightAction {
+  id             String          @id @default(uuid())
+  gameId         String
+  game           Game            @relation(fields: [gameId], references: [id])
+  night          Int
+  actorPlayerId  String
+  actionType     NightActionType
+  targetPlayerId String?
+  createdAt      DateTime        @default(now())
+}
+
+model PoisonPending {
+  id              String   @id @default(uuid())
+  gameId          String
+  game            Game     @relation(fields: [gameId], references: [id])
+  triggeredNight  Int
+  targetPlayerId  String
+  resolved        Boolean  @default(false)
+}
+
+model Vote {
+  id             String   @id @default(uuid())
+  gameId         String
+  game           Game     @relation(fields: [gameId], references: [id])
+  round          Int
+  stage          Int
+  voterPlayerId  String
+  targetPlayerId String
+  weight         Int      @default(1)
+  createdAt      DateTime @default(now())
+}
+
+model MayorState {
+  gameId     String
+  game       Game   @relation(fields: [gameId], references: [id])
+  playerId   String
+  savedVotes Int    @default(1)
+
+  @@id([gameId, playerId])
+}
+
+model ChatMessage {
+  id             String      @id @default(uuid())
+  gameId         String
+  game           Game        @relation(fields: [gameId], references: [id])
+  channel        ChatChannel
+  senderPlayerId String?
+  content        String
+  createdAt      DateTime    @default(now())
+}
+
+model GameEvent {
+  id        String   @id @default(uuid())
+  gameId    String
+  game      Game     @relation(fields: [gameId], references: [id])
+  type      String
+  payload   Json
+  createdAt DateTime @default(now())
+}
